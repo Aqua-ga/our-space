@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Secret Space 🧸✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1f1c2c, #2b1f35, #110e19);
+            --card-bg: rgba(25, 20, 35, 0.85);
+            --text-color: #fce4ec;
+            --accent-color: #ff758c;
+            --accent-glow: rgba(255, 117, 140, 0.4);
+            --border-color: rgba(255, 117, 140, 0.25);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            margin: 0; padding: 15px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        .container { width: 100%; max-width: 550px; z-index: 2; position: relative; }
+
+        .top-profiles {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; width: 100%;
+        }
+        .profile-badge {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(25, 20, 35, 0.7); border: 1px solid var(--border-color);
+            padding: 5px 12px; border-radius: 20px; backdrop-filter: blur(8px);
+            cursor: pointer; position: relative;
+        }
+        .profile-badge img {
+            width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+            border: 1px solid var(--accent-color);
+        }
+        .profile-badge span { font-size: 0.85rem; font-weight: 600; color: #ffb6c1; }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px; padding: 25px 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center; border: 1px solid var(--border-color);
+            position: relative;
+            display: none;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .active-screen { display: block !important; }
+
+        .bear-container { font-size: 3rem; margin-bottom: 5px; animation: bounce 2s infinite ease-in-out; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        h2, h1 { color: #ffb6c1; font-weight: 600; margin-bottom: 15px; }
+        
+        input[type="text"], input[type="date"] {
+            width: 85%; padding: 12px 15px; border: 1px solid var(--border-color);
+            border-radius: 12px; outline: none; font-size: 0.95rem;
+            text-align: center; margin-bottom: 15px; color: white; background: rgba(0,0,0,0.3);
+            font-family: inherit; box-sizing: border-box;
+        }
+        input:focus { border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
+
+        label.date-label { font-size: 0.9rem; color: #ffb6c1; display: block; margin-bottom: 8px; font-weight: 500; }
+
+        button {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3); color: white;
+            border: none; padding: 12px 25px; border-radius: 12px;
+            font-size: 0.95rem; cursor: pointer; font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            width: 100%; margin-top: 5px; box-sizing: border-box;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+
+        .secondary-btn {
+            background: rgba(255,255,255,0.08); border: 1px solid var(--border-color);
+            color: #ffb6c1; margin-top: 10px;
+        }
+        .secondary-btn:hover { background: rgba(255,255,255,0.15); }
+
+        .error-msg { color: #ff6b6b; font-size: 0.85rem; margin-top: 10px; display: none; }
+
+        .counter-box {
+            background: rgba(0,0,0,0.25); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 12px; text-align: center;
+            margin-bottom: 15px; font-size: 0.9rem; color: #ddd;
+        }
+        .counter-box span { color: var(--accent-color); font-weight: 600; font-size: 1.1rem; }
+
+        .tap-stats {
+            display: flex; justify-content: space-around; background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 8px;
+            margin-top: 10px; font-size: 0.8rem; color: #ffb6c1;
+        }
+        .tap-stats span { color: #fff; font-weight: 600; }
+
+        .daily-envelope {
+            background: rgba(255, 117, 140, 0.1); border: 1px dashed var(--accent-color);
+            border-radius: 14px; padding: 15px; text-align: center;
+            margin-bottom: 15px; cursor: pointer; transition: background 0.3s;
+        }
+        .daily-envelope:hover { background: rgba(255, 117, 140, 0.2); }
+        .envelope-title { font-size: 0.95rem; color: var(--accent-color); font-weight: 600; margin-bottom: 6px; }
+        .envelope-text { font-size: 0.88rem; margin-top: 6px; line-height: 1.5; white-space: pre-wrap; color: #f3f3f3; }
+
+        .menu-grid {
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-top: 12px;
+        }
+        .menu-grid button {
+            margin-top: 0; 
+            height: 75px; 
+            border-radius: 16px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 4px;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%; height: 65px; padding: 10px; border: 1px solid var(--border-color);
+            border-radius: 10px; resize: none; outline: none; font-family: inherit;
+            box-sizing: border-box; background: rgba(0,0,0,0.3); color: white; margin-bottom: 8px; font-size: 0.88rem;
+        }
+        textarea:focus { border-color: var(--accent-color); }
+
+        .file-upload-label {
+            display: block; background: rgba(0,0,0,0.3); color: var(--text-color);
+            border: 1px solid var(--border-color); padding: 10px; border-radius: 10px;
+            text-align: center; cursor: pointer; font-size: 0.85rem; margin-bottom: 10px;
+            transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .file-upload-label:hover { border-color: var(--accent-color); }
+        input[type="file"] { display: none; }
+
+        .admin-panel { background: rgba(0, 0, 0, 0.3); border: 1px solid var(--accent-color); border-radius: 14px; padding: 12px; margin-top: 15px; display: none; }
+        .admin-panel h3 { font-size: 0.85rem; color: var(--accent-color); margin: 0 0 8px 0; text-align: center; }
+
+        .wall { 
+            margin-top: 15px; max-height: 280px; overflow-y: auto; padding-right: 5px; text-align: left; 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+        }
+        .wall-item { 
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); 
+            border-radius: 12px; padding: 10px; position: relative; 
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .wall-item p { margin: 0 0 5px 0; word-break: break-word; white-space: pre-wrap; font-size: 0.8rem; }
+        .wall-item img { width: 100%; border-radius: 8px; max-height: 130px; object-fit: cover; margin-top: 5px; }
+        .item-date { font-size: 0.65rem; color: #aaa; text-align: right; display: block; margin-top: 5px; }
+        .delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(255, 75, 75, 0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 3; }
+
+        .question-box {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--accent-color);
+            border-radius: 16px; padding: 20px; margin-bottom: 15px; text-align: center;
+        }
+        .question-category { font-size: 0.75rem; color: #ffb6c1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .question-text { font-size: 1rem; color: #fff; line-height: 1.5; margin-bottom: 15px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+
+        .spotify-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; max-height: 300px; overflow-y: auto; padding-right: 5px;
+        }
+        .spotify-card {
+            background: rgba(0,0,0,0.35); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; position: relative;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .spotify-card iframe { width: 100%; height: 150px; border-radius: 10px; border: none; margin-top: 5px; }
+
+        .floating-icon {
+            position: fixed; font-size: 24px;
+            animation: floatFull 2s linear forwards; pointer-events: none; z-index: 999;
+        }
+        @keyframes floatFull {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.6); opacity: 0; }
+        }
+        
+        .sync-indicator {
+            text-align: center; font-size: 0.7rem; color: #ffb6c1; margin-top: 10px; opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="top-profiles" id="topProfilesBar" style="display: none;">
+            <div class="profile-badge" onclick="triggerProfileUpload('reef')">
+                <img id="leftProfileImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='%23ff758c'><circle cx='16' cy='16' r='16'/></svg>" alt="Reef">
+                <span id="leftProfileName">Reef</span>
+            </div>
+            <div class="profile-badge" onclick="triggerProfileUpload('bat')">
+                <span id="rightProfileName">Bat</span>
+                <img id="rightProfileImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='%23ff758c'><circle cx='16' cy='16' r='16'/></svg>" alt="Bat">
+            </div>
+            <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="handleProfileImageUpload(event)">
+        </div>
+
+        <div class="card active-screen" id="name-screen">
+            <div class="bear-container">🦇🖤</div>
+            <h2>Enter your name<br><span style="font-size: 1.2rem; color: #ff758c; font-weight: 500;">My Love</span></h2>
+            <input type="text" id="nameInput" placeholder="Reef or Bat...">
+            <button onclick="checkNameAndProceed()">Next ✨</button>
+            <div class="error-msg" id="nameErrorMsg">Please enter your name first!</div>
+        </div>
+
+        <div class="card" id="date-screen">
+            <div class="bear-container">💌✨</div>
+            <label class="date-label">When was our first text</label>
+            <input type="date" id="startDateInput">
+            <button onclick="completeSetup()">Enter Space ✨</button>
+            <div class="error-msg" id="dateErrorMsg">Please select a date!</div>
+        </div>
+
+        <div class="card" id="main-screen">
+            <div style="font-size: 2.2rem; margin-bottom: -5px;">🧸🦇</div>
+            <h1>Our Secret Space</h1>
+            
+            <div class="counter-box">
+                Days together: <span id="daysCount">1</span>
+            </div>
+            
+            <div class="daily-envelope" onclick="revealDailyMessage()">
+                <div class="envelope-title" id="envelopeTitle">Today Secret Note 💌</div>
+                <div class="envelope-text" id="envelopeContent">Tap to open today's message</div>
+            </div>
+
+            <button class="secondary-btn" style="height: 45px; border-radius: 12px;" onclick="handleTapHere(event)">Tap here ✨</button>
+            <div class="tap-stats">
+                <div>Reef Taps: <span id="reefTaps">0</span></div>
+                <div>Bat Taps: <span id="batTaps">0</span></div>
+            </div>
+            
+            <div class="menu-grid">
+                <button class="secondary-btn" onclick="goToScreen('notes-screen')">
+                    <span style="font-size: 1.2rem;">💬</span>
+                    <span>Sweet Notes</span>
+                </button>
+                <button class="secondary-btn" onclick="goToScreen('pics-screen')">
+                    <span style="font-size: 1.2rem;">📸</span>
+                    <span>Date & Pics</span>
+                </button>
+                <button class="secondary-btn" onclick="goToScreen('questions-screen')">
+                    <span style="font-size: 1.2rem;">🔥</span>
+                    <span>Questions</span>
+                </button>
+                <button class="secondary-btn" onclick="goToScreen('music-screen')">
+                    <span style="font-size: 1.2rem;">🎶</span>
+                    <span>Our Music</span>
+                </button>
+            </div>
+
+            <div class="admin-panel" id="adminPanel">
+                <h3>Bat's Admin Panel 🦇✨</h3>
+                <textarea id="newAdminMessage" placeholder="Add a new secret daily note..."></textarea>
+                <button onclick="addAdminMessage()">Add Daily Note</button>
+                
+                <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                    <label class="date-label" style="font-size: 0.8rem;">Change Relationship Date:</label>
+                    <input type="date" id="adminNewDateInput" style="margin-bottom: 8px; font-size: 0.85rem; padding: 8px;">
+                    <button onclick="updateRelationDateByBat()" style="padding: 8px 15px; font-size: 0.85rem;">Update Date 📅</button>
+                </div>
+
+                <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                    <label class="date-label" style="font-size: 0.8rem;">Change Secret Note Start Date:</label>
+                    <input type="date" id="adminNoteDateInput" style="margin-bottom: 8px; font-size: 0.85rem; padding: 8px;">
+                    <button onclick="updateNoteDateByBat()" style="padding: 8px 15px; font-size: 0.85rem;">Update Note Date 💌</button>
+                </div>
+            </div>
+            <div class="sync-indicator" id="syncStatus">Connected to Cloud ☁️</div>
+        </div>
+
+        <div class="card" id="notes-screen">
+            <h2>💬 Sweet Notes</h2>
+            <textarea id="noteTextText" placeholder="Write a new note or thought for us..."></textarea>
+            <button onclick="saveNote()">Save Note 📌</button>
+            <div class="wall" id="notesWall" style="grid-template-columns: 1fr;"></div>
+            <button class="secondary-btn" style="margin-top: 15px;" onclick="goToScreen('main-screen')">← Back to Main</button>
+        </div>
+
+        <div class="card" id="pics-screen">
+            <h2>📸 Our Date & Pics</h2>
+            <label class="file-upload-label" id="uploadLabelText" for="imageInput">📁 Choose Picture</label>
+            <input accept="image/*" id="imageInput" type="file" onchange="previewFileName()">
+            <textarea id="picCaption" placeholder="Write something about this picture (Optional)..."></textarea>
+            <button onclick="savePicMemory()">Save Picture 📌</button>
+            <div class="wall" id="picsWall"></div>
+            <button class="secondary-btn" style="margin-top: 15px;" onclick="goToScreen('main-screen')">← Back to Main</button>
+        </div>
+
+        <div class="card" id="questions-screen">
+            <h2>Questions 💬</h2>
+            <div class="question-box">
+                <div class="question-category" id="qCategory">✨</div>
+                <div class="question-text" id="qText">Click the button below to get a question!</div>
+            </div>
+            <button onclick="getRandomQuestion()">Next Question 🎲</button>
+            <button class="secondary-btn" style="margin-top: 10px;" onclick="goToScreen('main-screen')">← Back to Main</button>
+        </div>
+
+        <div class="card" id="music-screen">
+            <h2>🎶 Our Spotify Tracks</h2>
+            <textarea id="spotifyLinkInput" placeholder="Paste Spotify Track Link here..."></textarea>
+            <button onclick="saveMusicLink()">Add Song 🎵</button>
+            <div class="spotify-grid" id="spotifyGrid"></div>
+            <button class="secondary-btn" style="margin-top: 15px;" onclick="goToScreen('main-screen')">← Back to Main</button>
+        </div>
+
+    </div>
+
+    <!-- Firebase SDK (Cloud Realtime Sync) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDM-rAP_ulBVgrY_Y7n8mRJGD7uO590CC8",
+            authDomain: "oursecretspace-r.firebaseapp.com",
+            projectId: "oursecretspace-r",
+            storageBucket: "oursecretspace-r.firebasestorage.app",
+            messagingSenderId: "831502457301",
+            appId: "1:831502457301:web:1e182ff8d70871d091855c",
+            measurementId: "G-CSDNLCCM96"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const docRef = doc(db, "spaces", "main_room");
+
+        const questionsDatabase = [
+            {cat: "Sweet ✨", text: "What was your very first thought when you first started talking to me?"},
+            {cat: "Sweet ✨", text: "What is your absolute favorite physical feature of mine?"},
+            {cat: "Sweet ✨", text: "If you could instantly transport us anywhere in the world right now, where would we go?"},
+            {cat: "Sweet ✨", text: "What song reminds you of me the most whenever you hear it?"},
+            {cat: "Deep 🌙", text: "What is a small, specific memory of us that always makes you smile?"},
+            {cat: "Deep 🌙", text: "When do you feel most loved and appreciated by me?"},
+            {cat: "Deep 🌙", text: "What is one dream or goal you are dying to achieve in the future?"},
+            {cat: "Spicy 🔥", text: "What is something I do that instantly drives you crazy in a good way?"},
+            {cat: "Spicy 🔥", text: "If we were alone in a room right now with zero distractions, what would you want to do first?"},
+            {cat: "Spicy 🔥", text: "What is your favorite outfit or look on me?"},
+            {cat: "Spicy 🔥", text: "Describe your ideal romantic and passionate evening with me in detail."},
+            {cat: "Sweet ✨", text: "What is a quirky habit of mine that you secretly find adorable?"},
+            {cat: "Deep 🌙", text: "What is the best piece of advice or comfort I've ever given you?"},
+            {cat: "Spicy 🔥", text: "What is the most adventurous or spontaneous thing you'd want us to try together?"}
+        ];
+
+        let defaultMessages = [
+            "Day 1: I never thought i would love someone like you you just came and light up my world,I hope i never lose you my love",
+            "Day 2: No matter what happens you’ll always be my priority and I will try my best to make you feel loved in all ways my love",
+            "Day 3: Every second with you feels quiet and right.",
+            "Day 4: You are the part of the day I look forward to the most.",
+            "Day 5: Things just make sense when we talk."
+        ];
+
+        let remoteData = {
+            relation_start_date: "2026-01-01",
+            persistent_note_start_date: "2026-01-01",
+            reef_taps: 0,
+            bat_taps: 0,
+            admin_letters: [],
+            our_space_notes: [],
+            our_space_pics: [],
+            our_space_songs: [],
+            reef_profile_img: "",
+            bat_profile_img: ""
+        };
+
+        let activeTargetProfile = '';
+
+        // الاستماع الفوري للتحديثات من السحابة
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                remoteData = docSnap.data();
+                document.getElementById('syncStatus').innerText = "Connected to Cloud ☁️ (Synced)";
+                if (document.getElementById('main-screen').classList.contains('active-screen')) {
+                    initDashboard();
+                }
+                if (document.getElementById('notes-screen').classList.contains('active-screen')) {
+                    loadNotes();
+                }
+                if (document.getElementById('pics-screen').classList.contains('active-screen')) {
+                    loadPics();
+                }
+                if (document.getElementById('music-screen').classList.contains('active-screen')) {
+                    loadMusicLinks();
+                }
+            } else {
+                setDoc(docRef, remoteData);
+            }
+        }, (error) => {
+            document.getElementById('syncStatus').innerText = "Cloud Sync Error ⚠️";
+            console.error(error);
+        });
+
+        async function updateCloud(newData) {
+            remoteData = { ...remoteData, ...newData };
+            await setDoc(docRef, remoteData, { merge: true });
+        }
+
+        window.onload = function() {
+            let activeSession = sessionStorage.getItem('active_session');
+            let savedName = localStorage.getItem('user_name');
+
+            if (activeSession === 'true' && savedName) {
+                goToScreen('main-screen');
+            } else {
+                document.getElementById('name-screen').classList.add('active-screen');
+                document.getElementById('topProfilesBar').style.display = 'none';
+            }
+        };
+
+        window.triggerProfileUpload = function(profileKey) {
+            activeTargetProfile = profileKey;
+            document.getElementById('profileImageInput').click();
+        }
+
+        window.handleProfileImageUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                if (activeTargetProfile === 'reef') {
+                    await updateCloud({ reef_profile_img: e.target.result });
+                } else if (activeTargetProfile === 'bat') {
+                    await updateCloud({ bat_profile_img: e.target.result });
+                }
+                updateTopBarProfiles();
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        window.checkNameAndProceed = function() {
+            const name = document.getElementById('nameInput').value.trim();
+            const errorMsg = document.getElementById('nameErrorMsg');
+
+            if (!name) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            localStorage.setItem('user_name', name);
+            sessionStorage.setItem('active_session', 'true');
+            errorMsg.style.display = 'none';
+            
+            if (remoteData.relation_start_date) {
+                goToScreen('main-screen');
+            } else {
+                document.getElementById('startDateInput').valueAsDate = new Date();
+                document.getElementById('name-screen').classList.remove('active-screen');
+                document.getElementById('date-screen').classList.add('active-screen');
+            }
+        }
+
+        window.completeSetup = async function() {
+            const startDateStr = document.getElementById('startDateInput').value;
+            const errorMsg = document.getElementById('dateErrorMsg');
+
+            if (!startDateStr) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            await updateCloud({ relation_start_date: startDateStr, persistent_note_start_date: startDateStr });
+            errorMsg.style.display = 'none';
+            goToScreen('main-screen');
+        }
+
+        window.goToScreen = function(screenId) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active-screen'));
+            document.getElementById(screenId).classList.add('active-screen');
+
+            if (screenId !== 'name-screen' && screenId !== 'date-screen') {
+                document.getElementById('topProfilesBar').style.display = 'flex';
+                updateTopBarProfiles();
+            } else {
+                document.getElementById('topProfilesBar').style.display = 'none';
+            }
+
+            if (screenId === 'main-screen') initDashboard();
+            if (screenId === 'notes-screen') loadNotes();
+            if (screenId === 'pics-screen') loadPics();
+            if (screenId === 'music-screen') loadMusicLinks();
+            
+            if (screenId === 'questions-screen') {
+                document.getElementById('qCategory').innerText = "✨";
+                document.getElementById('qText').innerText = "Click the button below to get a question!";
+            }
+        }
+
+        function updateTopBarProfiles() {
+            document.getElementById('leftProfileName').innerText = "Reef";
+            document.getElementById('rightProfileName').innerText = "Bat";
+
+            if (remoteData.reef_profile_img) {
+                document.getElementById('leftProfileImg').src = remoteData.reef_profile_img;
+            }
+            if (remoteData.bat_profile_img) {
+                document.getElementById('rightProfileImg').src = remoteData.bat_profile_img;
+            }
+        }
+
+        function initDashboard() {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            if (name === "bat") {
+                document.getElementById('adminPanel').style.display = 'block';
+                if (remoteData.relation_start_date) {
+                    document.getElementById('adminNewDateInput').value = remoteData.relation_start_date;
+                }
+                if (remoteData.persistent_note_start_date) {
+                    document.getElementById('adminNoteDateInput').value = remoteData.persistent_note_start_date;
+                }
+            } else {
+                document.getElementById('adminPanel').style.display = 'none';
+            }
+
+            let relationDateStr = remoteData.relation_start_date;
+            let relationDate = relationDateStr ? new Date(relationDateStr) : new Date();
+            const now = new Date();
+            now.setHours(0,0,0,0);
+            relationDate.setHours(0,0,0,0);
+
+            const diffTime = now - relationDate;
+            let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays < 0) diffDays = 0;
+            document.getElementById('daysCount').innerText = diffDays + 1;
+
+            let noteStartDateStr = remoteData.persistent_note_start_date || relationDateStr;
+            let noteStartDate = noteStartDateStr ? new Date(noteStartDateStr) : new Date();
+            noteStartDate.setHours(0,0,0,0);
+
+            const noteDiffTime = now - noteStartDate;
+            let noteDiffDays = Math.floor(noteDiffTime / (1000 * 60 * 60 * 24));
+            if (noteDiffDays < 0) noteDiffDays = 0;
+            let totalNoteDays = noteDiffDays + 1;
+
+            let savedCustomMessages = remoteData.admin_letters || [];
+            let allMessages = savedCustomMessages.length > 0 ? savedCustomMessages : defaultMessages;
+            let currentMsgIndex = noteDiffDays % allMessages.length;
+            window.todaysLetter = allMessages[currentMsgIndex];
+            
+            document.getElementById('envelopeTitle').innerText = `Today Secret Note - Day ${totalNoteDays} 💌`;
+            document.getElementById('envelopeContent').innerText = "Tap to open today's message";
+
+            updateTapDisplay();
+        }
+
+        window.updateRelationDateByBat = async function() {
+            const newDate = document.getElementById('adminNewDateInput').value;
+            if (!newDate) { alert("Please select a date first!"); return; }
+            await updateCloud({ relation_start_date: newDate });
+            alert("Relationship date updated successfully! ✨");
+        }
+
+        window.updateNoteDateByBat = async function() {
+            const newDate = document.getElementById('adminNoteDateInput').value;
+            if (!newDate) { alert("Please select a date first!"); return; }
+            await updateCloud({ persistent_note_start_date: newDate });
+            alert("Secret note start date updated successfully! ✨");
+        }
+
+        window.revealDailyMessage = function() {
+            document.getElementById('envelopeContent').innerText = window.todaysLetter;
+        }
+
+        window.handleTapHere = async function(e) {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            let reefTaps = remoteData.reef_taps || 0;
+            let batTaps = remoteData.bat_taps || 0;
+
+            if (name === "bat") {
+                batTaps++;
+                await updateCloud({ bat_taps: batTaps });
+            } else {
+                reefTaps++;
+                await updateCloud({ reef_taps: reefTaps });
+            }
+            triggerFullscreenElements();
+        }
+
+        function updateTapDisplay() {
+            document.getElementById('reefTaps').innerText = remoteData.reef_taps || 0;
+            document.getElementById('batTaps').innerText = remoteData.bat_taps || 0;
+        }
+
+        function triggerFullscreenElements() {
+            const icons = ['💖', '🦇', '❤️', '🖤', '✨', '🐾', '🧸', '🌹'];
+            for (let i = 0; i < 35; i++) {
+                let el = document.createElement('div');
+                el.className = 'floating-icon';
+                el.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+                el.style.left = Math.random() * window.innerWidth + 'px';
+                el.style.top = (window.innerHeight - 50) + 'px';
+                el.style.animationDuration = (1.2 + Math.random() * 1.5) + 's';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 2500);
+            }
+        }
+
+        window.getRandomQuestion = function() {
+            const randomObj = questionsDatabase[Math.floor(Math.random() * questionsDatabase.length)];
+            document.getElementById('qCategory').innerText = randomObj.cat;
+            document.getElementById('qText').innerText = randomObj.text;
+        }
+
+        window.saveMusicLink = async function() {
+            const link = document.getElementById('spotifyLinkInput').value.trim();
+            if (!link) { alert("Please paste a link first!"); return; }
+
+            let songs = remoteData.our_space_songs || [];
+            songs.unshift({ id: Date.now(), url: link });
+            await updateCloud({ our_space_songs: songs });
+            document.getElementById('spotifyLinkInput').value = '';
+        }
+
+        window.deleteSong = async function(id) {
+            let songs = remoteData.our_space_songs || [];
+            songs = songs.filter(item => item.id !== id);
+            await updateCloud({ our_space_songs: songs });
+        }
+
+        function loadMusicLinks() {
+            const grid = document.getElementById('spotifyGrid');
+            let songs = remoteData.our_space_songs || [];
+            grid.innerHTML = '';
+            songs.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'spotify-card';
+                let embedUrl = item.url;
+                if (item.url.includes("spotify.com/track/")) {
+                    let trackId = item.url.split('track/')[1].split('?')[0];
+                    embedUrl = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+                }
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deleteSong(${item.id})">✕</button>
+                    <iframe src="${embedUrl}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        window.addAdminMessage = async function() {
+            const msgText = document.getElementById('newAdminMessage').value.trim();
+            if (!msgText) { alert("Please write something first"); return; }
+            let savedCustomMessages = remoteData.admin_letters || [];
+            if (savedCustomMessages.length === 0) { savedCustomMessages = [...defaultMessages]; }
+            savedCustomMessages.push(msgText);
+            await updateCloud({ admin_letters: savedCustomMessages });
+            document.getElementById('newAdminMessage').value = '';
+            alert("Secret note added successfully! ✨");
+        }
+
+        window.saveNote = async function() {
+            const text = document.getElementById('noteTextText').value.trim();
+            if (!text) { alert("Please write something first!"); return; }
+
+            let notes = remoteData.our_space_notes || [];
+            const dateStr = new Date().toLocaleString();
+            notes.unshift({ id: Date.now(), text: text, date: dateStr });
+            await updateCloud({ our_space_notes: notes });
+
+            document.getElementById('noteTextText').value = '';
+        }
+
+        window.deleteNote = async function(id) {
+            let notes = remoteData.our_space_notes || [];
+            notes = notes.filter(item => item.id !== id);
+            await updateCloud({ our_space_notes: notes });
+        }
+
+        function loadNotes() {
+            const wall = document.getElementById('notesWall');
+            let notes = remoteData.our_space_notes || [];
+            wall.innerHTML = '';
+            notes.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'wall-item';
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deleteNote(${item.id})">✕</button>
+                    <p>${item.text}</p>
+                    <span class="item-date">📅 ${item.date}</span>
+                `;
+                wall.appendChild(div);
+            });
+        }
+
+        window.previewFileName = function() {
+            const input = document.getElementById('imageInput');
+            const label = document.getElementById('uploadLabelText');
+            if (input.files.length > 0) {
+                label.innerText = "📁 " + input.files[0].name;
+            } else {
+                label.innerText = "📁 Choose Picture";
+            }
+        }
+
+        window.savePicMemory = function() {
+            const caption = document.getElementById('picCaption').value.trim();
+            const imageInput = document.getElementById('imageInput');
+
+            if (imageInput.files.length === 0) { alert("Please choose a picture first!"); return; }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                let pics = remoteData.our_space_pics || [];
+                const dateStr = new Date().toLocaleString();
+                pics.unshift({ id: Date.now(), text: caption, image: e.target.result, date: dateStr });
+                await updateCloud({ our_space_pics: pics });
+
+                document.getElementById('picCaption').value = '';
+                document.getElementById('imageInput').value = '';
+                document.getElementById('uploadLabelText').innerText = "📁 Choose Picture";
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+        }
+
+        window.deletePic = async function(id) {
+            let pics = remoteData.our_space_pics || [];
+            pics = pics.filter(item => item.id !== id);
+            await updateCloud({ our_space_pics: pics });
+        }
+
+        function loadPics() {
+            const wall = document.getElementById('picsWall');
+            let pics = remoteData.our_space_pics || [];
+            wall.innerHTML = '';
+            pics.pics = pics || [];
+            pics.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'wall-item';
+                let content = `<button class="delete-btn" onclick="deletePic(${item.id})">✕</button>`;
+                if (item.image) content += `<img src="${item.image}" alt="date pic">`;
+                if (item.text) content += `<p style="margin-top: 5px;">${item.text}</p>`;
+                content += `<span class="item-date">📅 ${item.date}</span>`;
+                div.innerHTML = content;
+                wall.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
