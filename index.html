@@ -31,7 +31,7 @@
 
         .top-profiles {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px; width: 100%;
+            margin-bottom: 15px; width: 100%; position: relative;
         }
         .profile-badge {
             display: flex; align-items: center; gap: 8px;
@@ -44,6 +44,15 @@
             border: 1px solid var(--accent-color);
         }
         .profile-badge span { font-size: 0.85rem; font-weight: 600; color: #ffb6c1; }
+
+        /* زر التشات الصغير اللي بالنصف بين الصور */
+        .middle-chat-btn {
+            background: rgba(255, 117, 140, 0.2); border: 1px solid var(--accent-color);
+            padding: 6px 14px; border-radius: 20px; color: #ffb6c1; font-size: 0.8rem;
+            font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;
+            backdrop-filter: blur(8px); transition: background 0.3s;
+        }
+        .middle-chat-btn:hover { background: rgba(255, 117, 140, 0.4); }
 
         .card {
             background: var(--card-bg);
@@ -167,8 +176,33 @@
         }
         .wall-item p { margin: 0 0 5px 0; word-break: break-word; white-space: pre-wrap; font-size: 0.8rem; }
         .wall-item img { width: 100%; border-radius: 8px; max-height: 130px; object-fit: cover; margin-top: 5px; }
+        .item-author { font-size: 0.7rem; color: var(--accent-color); font-weight: 600; margin-bottom: 4px; text-align: left; }
         .item-date { font-size: 0.65rem; color: #aaa; text-align: right; display: block; margin-top: 5px; }
         .delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(255, 75, 75, 0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 3; }
+
+        /* ستايل شات المحادثة المصغر */
+        .chat-box-container {
+            display: flex; flex-direction: column; height: 320px; margin-top: 10px;
+        }
+        .chat-messages {
+            flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 10px; overflow-y: auto; text-align: left;
+            display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;
+        }
+        .chat-bubble {
+            background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 10px;
+            max-width: 80%; word-break: break-word; font-size: 0.85rem; position: relative;
+        }
+        .chat-bubble.me { background: rgba(255, 117, 140, 0.25); align-self: flex-end; border: 1px solid var(--border-color); }
+        .chat-bubble img { max-width: 100%; border-radius: 6px; margin-top: 5px; max-height: 120px; object-fit: cover; }
+        .chat-input-area { display: flex; gap: 5px; align-items: center; }
+        .chat-input-area textarea { height: 40px; margin-bottom: 0; font-size: 0.8rem; padding: 8px; flex: 1; }
+        .chat-input-area button { width: auto; margin-top: 0; padding: 8px 15px; font-size: 0.85rem; height: 40px; }
+        .chat-file-label {
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: var(--accent-color);
+            padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+        }
 
         .question-box {
             background: rgba(0,0,0,0.3); border: 1px solid var(--accent-color);
@@ -198,16 +232,32 @@
         .sync-indicator {
             text-align: center; font-size: 0.7rem; color: #ffb6c1; margin-top: 10px; opacity: 0.8;
         }
+
+        .notification-banner {
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, #ff758c, #ff7eb3); color: white;
+            padding: 12px 20px; border-radius: 16px; box-shadow: 0 10px 25px rgba(255,117,140,0.5);
+            z-index: 9999; font-size: 0.9rem; font-weight: 600; text-align: center;
+            transition: transform 0.4s ease; max-width: 90%; width: 350px;
+        }
+        .notification-banner.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
+
+    <div class="notification-banner" id="notificationBanner">🔔 تنبيه جديد!</div>
+
     <div class="container">
 
+        <!-- شريط البروفايلات وفي المنتصف زر التشات -->
         <div class="top-profiles" id="topProfilesBar" style="display: none;">
             <div class="profile-badge" onclick="triggerProfileUpload('reef')">
                 <img id="leftProfileImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='%23ff758c'><circle cx='16' cy='16' r='16'/></svg>" alt="Reef">
                 <span id="leftProfileName">Reef</span>
             </div>
+            
+            <button class="middle-chat-btn" onclick="goToScreen('chat-screen')">💬 Chat</button>
+
             <div class="profile-badge" onclick="triggerProfileUpload('bat')">
                 <span id="rightProfileName">Bat</span>
                 <img id="rightProfileImg" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='%23ff758c'><circle cx='16' cy='16' r='16'/></svg>" alt="Bat">
@@ -289,6 +339,21 @@
             <div class="sync-indicator" id="syncStatus">Connected to Cloud ☁️</div>
         </div>
 
+        <!-- شاشة التشات المصغرة الجديدة -->
+        <div class="card" id="chat-screen">
+            <h2>💬 Our Secret Chat</h2>
+            <div class="chat-box-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <label class="chat-file-label" for="chatImageInput">📷</label>
+                    <input type="file" id="chatImageInput" accept="image/*" onchange="sendChatImage(event)">
+                    <textarea id="chatInputText" placeholder="Type a message..."></textarea>
+                    <button onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+            <button class="secondary-btn" style="margin-top: 15px;" onclick="goToScreen('main-screen')">← Back to Main</button>
+        </div>
+
         <div class="card" id="notes-screen">
             <h2>💬 Sweet Notes</h2>
             <textarea id="noteTextText" placeholder="Write a new note or thought for us..."></textarea>
@@ -330,7 +395,7 @@
     <!-- Firebase SDK (Cloud Realtime Sync) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDM-rAP_ulBVgrY_Y7n8mRJGD7uO590CC8",
@@ -346,31 +411,6 @@
         const db = getFirestore(app);
         const docRef = doc(db, "spaces", "main_room");
 
-        const questionsDatabase = [
-            {cat: "Sweet ✨", text: "What was your very first thought when you first started talking to me?"},
-            {cat: "Sweet ✨", text: "What is your absolute favorite physical feature of mine?"},
-            {cat: "Sweet ✨", text: "If you could instantly transport us anywhere in the world right now, where would we go?"},
-            {cat: "Sweet ✨", text: "What song reminds you of me the most whenever you hear it?"},
-            {cat: "Deep 🌙", text: "What is a small, specific memory of us that always makes you smile?"},
-            {cat: "Deep 🌙", text: "When do you feel most loved and appreciated by me?"},
-            {cat: "Deep 🌙", text: "What is one dream or goal you are dying to achieve in the future?"},
-            {cat: "Spicy 🔥", text: "What is something I do that instantly drives you crazy in a good way?"},
-            {cat: "Spicy 🔥", text: "If we were alone in a room right now with zero distractions, what would you want to do first?"},
-            {cat: "Spicy 🔥", text: "What is your favorite outfit or look on me?"},
-            {cat: "Spicy 🔥", text: "Describe your ideal romantic and passionate evening with me in detail."},
-            {cat: "Sweet ✨", text: "What is a quirky habit of mine that you secretly find adorable?"},
-            {cat: "Deep 🌙", text: "What is the best piece of advice or comfort I've ever given you?"},
-            {cat: "Spicy 🔥", text: "What is the most adventurous or spontaneous thing you'd want us to try together?"}
-        ];
-
-        let defaultMessages = [
-            "Day 1: I never thought i would love someone like you you just came and light up my world,I hope i never lose you my love",
-            "Day 2: No matter what happens you’ll always be my priority and I will try my best to make you feel loved in all ways my love",
-            "Day 3: Every second with you feels quiet and right.",
-            "Day 4: You are the part of the day I look forward to the most.",
-            "Day 5: Things just make sense when we talk."
-        ];
-
         let remoteData = {
             relation_start_date: "2026-01-01",
             persistent_note_start_date: "2026-01-01",
@@ -380,17 +420,32 @@
             our_space_notes: [],
             our_space_pics: [],
             our_space_songs: [],
+            our_space_chats: [],
             reef_profile_img: "",
-            bat_profile_img: ""
+            bat_profile_img: "",
+            last_activity: ""
         };
 
         let activeTargetProfile = '';
+        let lastActivityTimestamp = 0;
 
-        // الاستماع الفوري للتحديثات من السحابة
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
-                remoteData = docSnap.data();
+                const newData = docSnap.data();
+                const myName = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+                
+                if (myName === "bat" && newData.last_activity && newData.last_activity.timestamp > lastActivityTimestamp) {
+                    if (newData.last_activity.user === "Reef") {
+                        showNotification(newData.last_activity.text);
+                    }
+                }
+                if (newData.last_activity) {
+                    lastActivityTimestamp = newData.last_activity.timestamp || 0;
+                }
+
+                remoteData = newData;
                 document.getElementById('syncStatus').innerText = "Connected to Cloud ☁️ (Synced)";
+                
                 if (document.getElementById('main-screen').classList.contains('active-screen')) {
                     initDashboard();
                 }
@@ -403,15 +458,28 @@
                 if (document.getElementById('music-screen').classList.contains('active-screen')) {
                     loadMusicLinks();
                 }
+                if (document.getElementById('chat-screen').classList.contains('active-screen')) {
+                    loadChatMessages();
+                }
             } else {
                 setDoc(docRef, remoteData);
             }
         }, (error) => {
             document.getElementById('syncStatus').innerText = "Cloud Sync Error ⚠️";
-            console.error(error);
         });
 
-        async function updateCloud(newData) {
+        function showNotification(msg) {
+            const banner = document.getElementById('notificationBanner');
+            banner.innerText = "🔔 " + msg;
+            banner.classList.add('show');
+            setTimeout(() => { banner.classList.remove('show'); }, 5000);
+        }
+
+        async function updateCloud(newData, activityDesc = "") {
+            const currentName = (localStorage.getItem('user_name') || "User").trim();
+            if (activityDesc) {
+                newData.last_activity = { user: currentName, text: activityDesc, timestamp: Date.now() };
+            }
             remoteData = { ...remoteData, ...newData };
             await setDoc(docRef, remoteData, { merge: true });
         }
@@ -437,30 +505,47 @@
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = async function(e) {
-                if (activeTargetProfile === 'reef') {
-                    await updateCloud({ reef_profile_img: e.target.result });
-                } else if (activeTargetProfile === 'bat') {
-                    await updateCloud({ bat_profile_img: e.target.result });
-                }
-                updateTopBarProfiles();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = async function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 150; const MAX_HEIGHT = 150;
+                    let width = img.width; let height = img.height;
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    const currentName = localStorage.getItem('user_name') || "Someone";
+
+                    if (activeTargetProfile === 'reef') {
+                        await updateCloud({ reef_profile_img: compressedDataUrl }, `${currentName} updated Reef's profile picture`);
+                    } else if (activeTargetProfile === 'bat') {
+                        await updateCloud({ bat_profile_img: compressedDataUrl }, `${currentName} updated Bat's profile picture`);
+                    }
+                    updateTopBarProfiles();
+                };
             };
             reader.readAsDataURL(file);
             event.target.value = '';
         }
 
-        window.checkNameAndProceed = function() {
+        window.checkNameAndProceed = async function() {
             const name = document.getElementById('nameInput').value.trim();
             const errorMsg = document.getElementById('nameErrorMsg');
 
-            if (!name) {
-                errorMsg.style.display = 'block';
-                return;
-            }
+            if (!name) { errorMsg.style.display = 'block'; return; }
 
             localStorage.setItem('user_name', name);
             sessionStorage.setItem('active_session', 'true');
             errorMsg.style.display = 'none';
+
+            await updateCloud({}, `${name} opened the secret space ✨`);
             
             if (remoteData.relation_start_date) {
                 goToScreen('main-screen');
@@ -475,10 +560,7 @@
             const startDateStr = document.getElementById('startDateInput').value;
             const errorMsg = document.getElementById('dateErrorMsg');
 
-            if (!startDateStr) {
-                errorMsg.style.display = 'block';
-                return;
-            }
+            if (!startDateStr) { errorMsg.style.display = 'block'; return; }
 
             await updateCloud({ relation_start_date: startDateStr, persistent_note_start_date: startDateStr });
             errorMsg.style.display = 'none';
@@ -500,6 +582,7 @@
             if (screenId === 'notes-screen') loadNotes();
             if (screenId === 'pics-screen') loadPics();
             if (screenId === 'music-screen') loadMusicLinks();
+            if (screenId === 'chat-screen') loadChatMessages();
             
             if (screenId === 'questions-screen') {
                 document.getElementById('qCategory').innerText = "✨";
@@ -511,33 +594,23 @@
             document.getElementById('leftProfileName').innerText = "Reef";
             document.getElementById('rightProfileName').innerText = "Bat";
 
-            if (remoteData.reef_profile_img) {
-                document.getElementById('leftProfileImg').src = remoteData.reef_profile_img;
-            }
-            if (remoteData.bat_profile_img) {
-                document.getElementById('rightProfileImg').src = remoteData.bat_profile_img;
-            }
+            if (remoteData.reef_profile_img) { document.getElementById('leftProfileImg').src = remoteData.reef_profile_img; }
+            if (remoteData.bat_profile_img) { document.getElementById('rightProfileImg').src = remoteData.bat_profile_img; }
         }
 
         function initDashboard() {
             const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
             if (name === "bat") {
                 document.getElementById('adminPanel').style.display = 'block';
-                if (remoteData.relation_start_date) {
-                    document.getElementById('adminNewDateInput').value = remoteData.relation_start_date;
-                }
-                if (remoteData.persistent_note_start_date) {
-                    document.getElementById('adminNoteDateInput').value = remoteData.persistent_note_start_date;
-                }
+                if (remoteData.relation_start_date) { document.getElementById('adminNewDateInput').value = remoteData.relation_start_date; }
+                if (remoteData.persistent_note_start_date) { document.getElementById('adminNoteDateInput').value = remoteData.persistent_note_start_date; }
             } else {
                 document.getElementById('adminPanel').style.display = 'none';
             }
 
             let relationDateStr = remoteData.relation_start_date;
             let relationDate = relationDateStr ? new Date(relationDateStr) : new Date();
-            const now = new Date();
-            now.setHours(0,0,0,0);
-            relationDate.setHours(0,0,0,0);
+            const now = new Date(); now.setHours(0,0,0,0); relationDate.setHours(0,0,0,0);
 
             const diffTime = now - relationDate;
             let diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -567,14 +640,14 @@
         window.updateRelationDateByBat = async function() {
             const newDate = document.getElementById('adminNewDateInput').value;
             if (!newDate) { alert("Please select a date first!"); return; }
-            await updateCloud({ relation_start_date: newDate });
+            await updateCloud({ relation_start_date: newDate }, "Bat updated relationship date");
             alert("Relationship date updated successfully! ✨");
         }
 
         window.updateNoteDateByBat = async function() {
             const newDate = document.getElementById('adminNoteDateInput').value;
             if (!newDate) { alert("Please select a date first!"); return; }
-            await updateCloud({ persistent_note_start_date: newDate });
+            await updateCloud({ persistent_note_start_date: newDate }, "Bat updated note date");
             alert("Secret note start date updated successfully! ✨");
         }
 
@@ -583,16 +656,16 @@
         }
 
         window.handleTapHere = async function(e) {
-            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            const name = (localStorage.getItem('user_name') || "").trim();
             let reefTaps = remoteData.reef_taps || 0;
             let batTaps = remoteData.bat_taps || 0;
 
-            if (name === "bat") {
+            if (name.toLowerCase() === "bat") {
                 batTaps++;
-                await updateCloud({ bat_taps: batTaps });
+                await updateCloud({ bat_taps: batTaps }, `${name} tapped the heart 💖`);
             } else {
                 reefTaps++;
-                await updateCloud({ reef_taps: reefTaps });
+                await updateCloud({ reef_taps: reefTaps }, `${name} tapped the heart 💖`);
             }
             triggerFullscreenElements();
         }
@@ -616,6 +689,92 @@
             }
         }
 
+        // دوال شات المحادثة المصغرة
+        window.sendChatMessage = async function() {
+            const text = document.getElementById('chatInputText').value.trim();
+            if (!text) return;
+
+            const name = localStorage.getItem('user_name') || "Someone";
+            let chats = remoteData.our_space_chats || [];
+            chats.push({ id: Date.now(), text: text, image: "", author: name, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+            
+            await updateCloud({ our_space_chats: chats }, `${name} sent a message in chat 💬`);
+            document.getElementById('chatInputText').value = '';
+        }
+
+        window.sendChatImage = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = async function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 300; const MAX_HEIGHT = 300;
+                    let width = img.width; let height = img.height;
+                    if (width > height) {
+                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    } else {
+                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                    }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
+
+                    const name = localStorage.getItem('user_name') || "Someone";
+                    let chats = remoteData.our_space_chats || [];
+                    chats.push({ id: Date.now(), text: "", image: compressedDataUrl, author: name, date: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) });
+                    
+                    await updateCloud({ our_space_chats: chats }, `${name} sent a picture in chat 📸`);
+                };
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        window.deleteChatMessage = async function(id) {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            if (name !== "bat") { alert("Only Bat can delete items! 🦇"); return; }
+
+            let chats = remoteData.our_space_chats || [];
+            chats = chats.filter(item => item.id !== id);
+            await updateCloud({ our_space_chats: chats }, "Bat deleted a chat message");
+        }
+
+        function loadChatMessages() {
+            const container = document.getElementById('chatMessages');
+            let chats = remoteData.our_space_chats || [];
+            const currentName = (localStorage.getItem('user_name') || "").trim();
+            const isBat = (currentName.toLowerCase() === "bat");
+
+            container.innerHTML = '';
+            if (chats.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #888; font-size: 0.8rem; margin-top: auto; margin-bottom: auto;">No messages yet. Say hello! ✨</div>';
+                return;
+            }
+
+            chats.forEach(item => {
+                let div = document.createElement('div');
+                let isMe = (item.author.toLowerCase() === currentName.toLowerCase());
+                div.className = 'chat-bubble' + (isMe ? ' me' : '');
+
+                let content = `<div style="font-size: 0.65rem; color: var(--accent-color); font-weight: 600; margin-bottom: 2px;">${item.author}</div>`;
+                if (item.text) content += `<div>${item.text}</div>`;
+                if (item.image) content += `<img src="${item.image}" alt="chat img">`;
+                content += `<div style="font-size: 0.55rem; color: #aaa; text-align: right; margin-top: 2px;">${item.date}</div>`;
+                
+                if (isBat) {
+                    content += `<button class="delete-btn" style="top: 2px; right: 2px; width: 16px; height: 16px; font-size: 8px;" onclick="deleteChatMessage(${item.id})">✕</button>`;
+                }
+
+                div.innerHTML = content;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
         window.getRandomQuestion = function() {
             const randomObj = questionsDatabase[Math.floor(Math.random() * questionsDatabase.length)];
             document.getElementById('qCategory').innerText = randomObj.cat;
@@ -626,21 +785,28 @@
             const link = document.getElementById('spotifyLinkInput').value.trim();
             if (!link) { alert("Please paste a link first!"); return; }
 
+            const name = localStorage.getItem('user_name') || "Someone";
             let songs = remoteData.our_space_songs || [];
-            songs.unshift({ id: Date.now(), url: link });
-            await updateCloud({ our_space_songs: songs });
+            songs.unshift({ id: Date.now(), url: link, author: name });
+            await updateCloud({ our_space_songs: songs }, `${name} added a new Spotify track 🎶`);
             document.getElementById('spotifyLinkInput').value = '';
         }
 
         window.deleteSong = async function(id) {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            if (name !== "bat") { alert("Only Bat can delete items! 🦇"); return; }
+
             let songs = remoteData.our_space_songs || [];
             songs = songs.filter(item => item.id !== id);
-            await updateCloud({ our_space_songs: songs });
+            await updateCloud({ our_space_songs: songs }, "Bat deleted a song");
         }
 
         function loadMusicLinks() {
             const grid = document.getElementById('spotifyGrid');
             let songs = remoteData.our_space_songs || [];
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            const isBat = (name === "bat");
+
             grid.innerHTML = '';
             songs.forEach(item => {
                 let div = document.createElement('div');
@@ -650,10 +816,13 @@
                     let trackId = item.url.split('track/')[1].split('?')[0];
                     embedUrl = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
                 }
-                div.innerHTML = `
-                    <button class="delete-btn" onclick="deleteSong(${item.id})">✕</button>
-                    <iframe src="${embedUrl}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                `;
+                
+                let content = '';
+                if (isBat) { content += `<button class="delete-btn" onclick="deleteSong(${item.id})">✕</button>`; }
+                if (item.author) { content += `<div class="item-author">By: ${item.author}</div>`; }
+                content += `<iframe src="${embedUrl}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+                
+                div.innerHTML = content;
                 grid.appendChild(div);
             });
         }
@@ -664,7 +833,7 @@
             let savedCustomMessages = remoteData.admin_letters || [];
             if (savedCustomMessages.length === 0) { savedCustomMessages = [...defaultMessages]; }
             savedCustomMessages.push(msgText);
-            await updateCloud({ admin_letters: savedCustomMessages });
+            await updateCloud({ admin_letters: savedCustomMessages }, "Bat added a new daily note");
             document.getElementById('newAdminMessage').value = '';
             alert("Secret note added successfully! ✨");
         }
@@ -673,32 +842,40 @@
             const text = document.getElementById('noteTextText').value.trim();
             if (!text) { alert("Please write something first!"); return; }
 
+            const name = localStorage.getItem('user_name') || "Someone";
             let notes = remoteData.our_space_notes || [];
             const dateStr = new Date().toLocaleString();
-            notes.unshift({ id: Date.now(), text: text, date: dateStr });
-            await updateCloud({ our_space_notes: notes });
+            notes.unshift({ id: Date.now(), text: text, date: dateStr, author: name });
+            await updateCloud({ our_space_notes: notes }, `${name} added a new sweet note 💬`);
 
             document.getElementById('noteTextText').value = '';
         }
 
         window.deleteNote = async function(id) {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            if (name !== "bat") { alert("Only Bat can delete items! 🦇"); return; }
+
             let notes = remoteData.our_space_notes || [];
             notes = notes.filter(item => item.id !== id);
-            await updateCloud({ our_space_notes: notes });
+            await updateCloud({ our_space_notes: notes }, "Bat deleted a note");
         }
 
         function loadNotes() {
             const wall = document.getElementById('notesWall');
             let notes = remoteData.our_space_notes || [];
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            const isBat = (name === "bat");
+
             wall.innerHTML = '';
             notes.forEach(item => {
                 let div = document.createElement('div');
                 div.className = 'wall-item';
-                div.innerHTML = `
-                    <button class="delete-btn" onclick="deleteNote(${item.id})">✕</button>
-                    <p>${item.text}</p>
-                    <span class="item-date">📅 ${item.date}</span>
-                `;
+                
+                let content = '';
+                if (isBat) { content += `<button class="delete-btn" onclick="deleteNote(${item.id})">✕</button>`; }
+                if (item.author) { content += `<div class="item-author">By: ${item.author}</div>`; }
+                content += `<p>${item.text}</p><span class="item-date">📅 ${item.date}</span>`;
+                div.innerHTML = content;
                 wall.appendChild(div);
             });
         }
@@ -706,11 +883,8 @@
         window.previewFileName = function() {
             const input = document.getElementById('imageInput');
             const label = document.getElementById('uploadLabelText');
-            if (input.files.length > 0) {
-                label.innerText = "📁 " + input.files[0].name;
-            } else {
-                label.innerText = "📁 Choose Picture";
-            }
+            if (input.files.length > 0) { label.innerText = "📁 " + input.files[0].name; } 
+            else { label.innerText = "📁 Choose Picture"; }
         }
 
         window.savePicMemory = function() {
@@ -721,10 +895,11 @@
 
             const reader = new FileReader();
             reader.onload = async function(e) {
+                const name = localStorage.getItem('user_name') || "Someone";
                 let pics = remoteData.our_space_pics || [];
                 const dateStr = new Date().toLocaleString();
-                pics.unshift({ id: Date.now(), text: caption, image: e.target.result, date: dateStr });
-                await updateCloud({ our_space_pics: pics });
+                pics.unshift({ id: Date.now(), text: caption, image: e.target.result, date: dateStr, author: name });
+                await updateCloud({ our_space_pics: pics }, `${name} added a new picture 📸`);
 
                 document.getElementById('picCaption').value = '';
                 document.getElementById('imageInput').value = '';
@@ -734,23 +909,33 @@
         }
 
         window.deletePic = async function(id) {
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            if (name !== "bat") { alert("Only Bat can delete items! 🦇"); return; }
+
             let pics = remoteData.our_space_pics || [];
             pics = pics.filter(item => item.id !== id);
-            await updateCloud({ our_space_pics: pics });
+            await updateCloud({ our_space_pics: pics }, "Bat deleted a picture");
         }
 
         function loadPics() {
             const wall = document.getElementById('picsWall');
             let pics = remoteData.our_space_pics || [];
+            const name = (localStorage.getItem('user_name') || "").trim().toLowerCase();
+            const isBat = (name === "bat");
+
             wall.innerHTML = '';
-            pics.pics = pics || [];
+            pics = pics || [];
             pics.forEach(item => {
                 let div = document.createElement('div');
                 div.className = 'wall-item';
-                let content = `<button class="delete-btn" onclick="deletePic(${item.id})">✕</button>`;
+                
+                let content = '';
+                if (isBat) { content += `<button class="delete-btn" onclick="deletePic(${item.id})">✕</button>`; }
+                if (item.author) { content += `<div class="item-author">By: ${item.author}</div>`; }
                 if (item.image) content += `<img src="${item.image}" alt="date pic">`;
                 if (item.text) content += `<p style="margin-top: 5px;">${item.text}</p>`;
                 content += `<span class="item-date">📅 ${item.date}</span>`;
+                
                 div.innerHTML = content;
                 wall.appendChild(div);
             });
