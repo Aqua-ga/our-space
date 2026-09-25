@@ -330,7 +330,7 @@
     <!-- Firebase SDK (Cloud Realtime Sync) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDM-rAP_ulBVgrY_Y7n8mRJGD7uO590CC8",
@@ -624,9 +624,10 @@
         window.saveMusicLink = async function() {
             const link = document.getElementById('spotifyLinkInput').value.trim();
             if (!link) { alert("Please paste a link first!"); return; }
+            const author = localStorage.getItem('user_name') || "Anonymous";
 
             let songs = remoteData.our_space_songs || [];
-            songs.unshift({ id: Date.now(), url: link });
+            songs.unshift({ id: Date.now(), url: link, author: author });
             await updateCloud({ our_space_songs: songs });
             document.getElementById('spotifyLinkInput').value = '';
         }
@@ -660,6 +661,7 @@
                 div.innerHTML = `
                     ${showDelete ? `<button class="delete-btn" style="display:flex;" onclick="deleteSong(${item.id})">✕</button>` : ''}
                     <iframe src="${embedUrl}" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    <span style="font-size: 0.75rem; color: var(--accent-color); margin-top: 5px;">By: ${item.author || "Reef"}</span>
                 `;
                 grid.appendChild(div);
             });
@@ -712,7 +714,7 @@
                 div.className = 'wall-item';
                 div.innerHTML = `
                     ${showDelete ? `<button class="delete-btn" style="display:flex;" onclick="deleteNote(${item.id})">✕</button>` : ''}
-                    <p><b>${item.author || "Reef"}:</b> ${item.text}</p>
+                    <p>${item.text}</p>
                     <div class="note-footer" style="display:flex; justify-content:space-between; width:100%; margin-top:5px;">
                         <span style="font-size: 0.75rem; color: var(--accent-color);">By: ${item.author || "Reef"}</span>
                         <span class="item-date" style="font-size: 0.65rem; color: #aaa;">📅 ${item.date}</span>
