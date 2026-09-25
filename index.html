@@ -30,7 +30,7 @@
             justify-content: space-between;
             width: 100%;
             max-width: 500px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             background: var(--card-bg);
             padding: 10px 20px;
             border-radius: 30px;
@@ -49,42 +49,6 @@
             border-radius: 50%;
             background: var(--accent-pink);
         }
-        .chat-btn {
-            background: transparent;
-            border: 1px solid var(--accent-pink);
-            color: var(--text-color);
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .chat-btn:hover {
-            background: var(--accent-pink);
-            color: #fff;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-        .identity-bar {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            padding: 12px 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
-            border: 1px solid #332947;
-        }
-        .identity-bar select {
-            background: #1e182b;
-            color: var(--text-color);
-            border: 1px solid var(--accent-pink);
-            padding: 6px 12px;
-            border-radius: 8px;
-            outline: none;
-            font-weight: bold;
-        }
         .main-card {
             background: var(--card-bg);
             width: 100%;
@@ -101,7 +65,7 @@
         }
         textarea {
             width: 100%;
-            height: 90px;
+            height: 100px;
             background: #1e182b;
             border: 1px solid #332947;
             border-radius: 12px;
@@ -109,7 +73,7 @@
             padding: 12px;
             box-sizing: border-box;
             resize: none;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
         textarea:focus {
             outline: none;
@@ -149,100 +113,49 @@
 </head>
 <body>
 
-    <!-- الهيدر الأساسي -->
     <div class="header-container">
         <div class="user-badge">
             <div class="user-dot"></div>
-            <span>Our Secret Space</span>
+            <span>Reef & Bat</span>
         </div>
-        <button class="chat-btn" id="navBtn" onclick="toggleView()">💬 Chat</button>
     </div>
 
-    <!-- قائمة اختيار الشخصية -->
-    <div class="identity-bar">
-        <span>✍️ Active User:</span>
-        <select id="authorSelect">
-            <option value="Reef">Reef</option>
-            <option value="Bat">Bat</option>
-        </select>
-    </div>
-
-    <!-- البطاقة الرئيسية (تفتح على Sweet Notes أول شي) -->
     <div class="main-card">
-        <h2 id="section-title">Sweet Notes 📌</h2>
+        <h2>Sweet Notes 📌</h2>
         
-        <div id="content-container">
-            <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-            <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
+        <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
+        <button class="save-btn" onclick="saveNote()">Save Note 📌</button>
 
-            <div id="itemsContainer">
-                <div class="note-item">
-                    <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
-                    <div class="note-footer">
-                        <span>By: Reef</span>
-                        <span>9/25/2026, 3:02:30 AM</span>
-                    </div>
+        <div id="notesContainer">
+            <div class="note-item">
+                <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
+                <div class="note-footer">
+                    <span>By: Reef</span>
+                    <span>9/25/2026, 3:02:30 AM</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let isChatView = false;
-
-        function toggleView() {
-            const title = document.getElementById('section-title');
-            const container = document.getElementById('content-container');
-            const navBtn = document.getElementById('navBtn');
-            
-            isChatView = !isChatView;
-
-            if(isChatView) {
-                title.innerText = 'Real-Time Chat 💬';
-                navBtn.innerText = '📌 Notes';
-                container.innerHTML = `
-                    <textarea id="noteInput" placeholder="Type a message to chat..."></textarea>
-                    <button class="save-btn" onclick="saveItem()">Send Message 💬</button>
-                    <div id="itemsContainer"></div>
-                `;
-            } else {
-                title.innerText = 'Sweet Notes 📌';
-                navBtn.innerText = '💬 Chat';
-                container.innerHTML = `
-                    <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-                    <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
-                    <div id="itemsContainer">
-                        <div class="note-item">
-                            <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
-                            <div class="note-footer">
-                                <span>By: Reef</span>
-                                <span>9/25/2026, 3:02:30 AM</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function saveItem() {
+        function saveNote() {
             const text = document.getElementById('noteInput').value;
-            const author = document.getElementById('authorSelect').value;
             if(!text.trim()) return;
 
-            const container = document.getElementById('itemsContainer');
+            const container = document.getElementById('notesContainer');
             const dateStr = new Date().toLocaleString();
 
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'note-item';
-            itemDiv.innerHTML = `
+            const noteDiv = document.createElement('div');
+            noteDiv.className = 'note-item';
+            noteDiv.innerHTML = `
                 <p>${text}</p>
                 <div class="note-footer">
-                    <span>By: ${author}</span>
+                    <span>By: Reef</span>
                     <span>${dateStr}</span>
                 </div>
             `;
             
-            container.prepend(itemDiv);
+            container.prepend(noteDiv);
             document.getElementById('noteInput').value = '';
         }
     </script>
