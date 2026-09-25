@@ -35,6 +35,7 @@
             padding: 10px 20px;
             border-radius: 30px;
             box-shadow: 0 0 15px var(--accent-glow);
+            box-sizing: border-box;
         }
         .user-badge {
             display: flex;
@@ -148,16 +149,16 @@
 </head>
 <body>
 
-    <!-- شريط الأسماء وزر التشات العلوي -->
+    <!-- الهيدر الأساسي -->
     <div class="header-container">
         <div class="user-badge">
             <div class="user-dot"></div>
             <span>Our Secret Space</span>
         </div>
-        <button class="chat-btn" onclick="toggleChat()">💬 Chat</button>
+        <button class="chat-btn" id="navBtn" onclick="toggleView()">💬 Chat</button>
     </div>
 
-    <!-- قائمة اختيار الشخصية (مين اللي جالس يكتب الحين) -->
+    <!-- قائمة اختيار الشخصية -->
     <div class="identity-bar">
         <span>✍️ Active User:</span>
         <select id="authorSelect">
@@ -166,14 +167,15 @@
         </select>
     </div>
 
+    <!-- البطاقة الرئيسية (تفتح على Sweet Notes أول شي) -->
     <div class="main-card">
         <h2 id="section-title">Sweet Notes 📌</h2>
         
-        <div id="notes-section">
+        <div id="content-container">
             <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-            <button class="save-btn" onclick="saveNote()">Save Note 📌</button>
+            <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
 
-            <div id="notesContainer">
+            <div id="itemsContainer">
                 <div class="note-item">
                     <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
                     <div class="note-footer">
@@ -186,23 +188,30 @@
     </div>
 
     <script>
-        function toggleChat() {
+        let isChatView = false;
+
+        function toggleView() {
             const title = document.getElementById('section-title');
-            const container = document.getElementById('notes-section');
+            const container = document.getElementById('content-container');
+            const navBtn = document.getElementById('navBtn');
             
-            if(title.innerText.includes('Sweet Notes')) {
+            isChatView = !isChatView;
+
+            if(isChatView) {
                 title.innerText = 'Real-Time Chat 💬';
+                navBtn.innerText = '📌 Notes';
                 container.innerHTML = `
                     <textarea id="noteInput" placeholder="Type a message to chat..."></textarea>
-                    <button class="save-btn" onclick="saveNote()">Send Message 💬</button>
-                    <div id="notesContainer"></div>
+                    <button class="save-btn" onclick="saveItem()">Send Message 💬</button>
+                    <div id="itemsContainer"></div>
                 `;
             } else {
                 title.innerText = 'Sweet Notes 📌';
+                navBtn.innerText = '💬 Chat';
                 container.innerHTML = `
                     <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-                    <button class="save-btn" onclick="saveNote()">Save Note 📌</button>
-                    <div id="notesContainer">
+                    <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
+                    <div id="itemsContainer">
                         <div class="note-item">
                             <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
                             <div class="note-footer">
@@ -215,17 +224,17 @@
             }
         }
 
-        function saveNote() {
+        function saveItem() {
             const text = document.getElementById('noteInput').value;
             const author = document.getElementById('authorSelect').value;
             if(!text.trim()) return;
 
-            const container = document.getElementById('notesContainer');
+            const container = document.getElementById('itemsContainer');
             const dateStr = new Date().toLocaleString();
 
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note-item';
-            noteDiv.innerHTML = `
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'note-item';
+            itemDiv.innerHTML = `
                 <p>${text}</p>
                 <div class="note-footer">
                     <span>By: ${author}</span>
@@ -233,7 +242,7 @@
                 </div>
             `;
             
-            container.prepend(noteDiv);
+            container.prepend(itemDiv);
             document.getElementById('noteInput').value = '';
         }
     </script>
