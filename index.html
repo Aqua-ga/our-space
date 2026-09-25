@@ -30,7 +30,7 @@
             justify-content: space-between;
             width: 100%;
             max-width: 500px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             background: var(--card-bg);
             padding: 10px 20px;
             border-radius: 30px;
@@ -49,6 +49,21 @@
             border-radius: 50%;
             background: var(--accent-pink);
         }
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--accent-pink);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9em;
+        }
+        .nav-btn:hover {
+            background: var(--accent-pink);
+            color: #fff;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
         .main-card {
             background: var(--card-bg);
             width: 100%;
@@ -65,7 +80,7 @@
         }
         textarea {
             width: 100%;
-            height: 100px;
+            height: 90px;
             background: #1e182b;
             border: 1px solid #332947;
             border-radius: 12px;
@@ -73,7 +88,7 @@
             padding: 12px;
             box-sizing: border-box;
             resize: none;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         textarea:focus {
             outline: none;
@@ -113,49 +128,88 @@
 </head>
 <body>
 
+    <!-- الهيدر مع زر التنقل الأساسي -->
     <div class="header-container">
         <div class="user-badge">
             <div class="user-dot"></div>
-            <span>Reef & Bat</span>
+            <span id="site-title">Our Secret Space</span>
         </div>
+        <button class="nav-btn" id="switchBtn" onclick="switchView()">💬 Chat</button>
     </div>
 
+    <!-- البطاقة الرئيسية -->
     <div class="main-card">
-        <h2>Sweet Notes 📌</h2>
+        <h2 id="section-title">Welcome Home 🖤</h2>
         
-        <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-        <button class="save-btn" onclick="saveNote()">Save Note 📌</button>
-
-        <div id="notesContainer">
-            <div class="note-item">
-                <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
-                <div class="note-footer">
-                    <span>By: Reef</span>
-                    <span>9/25/2026, 3:02:30 AM</span>
-                </div>
-            </div>
+        <div id="view-content">
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
+                هذه هي واجهتكم الرئيسية. تقدرون تختارون الانتقال للتشات أو الملاحظات بكل حرية من الأزرار!
+            </p>
+            <button class="save-btn" onclick="openNotes()" style="margin-bottom: 10px;">📌 Go to Sweet Notes</button>
+            <button class="save-btn" onclick="openChat()" style="background: #332947;">💬 Go to Chat</button>
         </div>
     </div>
 
     <script>
-        function saveNote() {
+        function openNotes() {
+            document.getElementById('section-title').innerText = 'Sweet Notes 📌';
+            document.getElementById('switchBtn').innerText = '🏠 Home';
+            document.getElementById('view-content').innerHTML = `
+                <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
+                <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
+                <div id="itemsContainer">
+                    <div class="note-item">
+                        <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
+                        <div class="note-footer">
+                            <span>By: Reef</span>
+                            <span>9/25/2026, 3:02:30 AM</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openChat() {
+            document.getElementById('section-title').innerText = 'Real-Time Chat 💬';
+            document.getElementById('switchBtn').innerText = '🏠 Home';
+            document.getElementById('view-content').innerHTML = `
+                <textarea id="noteInput" placeholder="Type a message..."></textarea>
+                <button class="save-btn" onclick="saveItem()">Send Message 💬</button>
+                <div id="itemsContainer"></div>
+            `;
+        }
+
+        function switchView() {
+            // الزر فوق يرجعك للصفحة الرئيسية الأساسية
+            document.getElementById('section-title').innerText = 'Welcome Home 🖤';
+            document.getElementById('switchBtn').innerText = '💬 Chat';
+            document.getElementById('view-content').innerHTML = `
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
+                    هذه هي واجهتكم الرئيسية. تقدرون تختارون الانتقال للتشات أو الملاحظات بكل حرية من الأزرار!
+                </p>
+                <button class="save-btn" onclick="openNotes()" style="margin-bottom: 10px;">📌 Go to Sweet Notes</button>
+                <button class="save-btn" onclick="openChat()" style="background: #332947;">💬 Go to Chat</button>
+            `;
+        }
+
+        function saveItem() {
             const text = document.getElementById('noteInput').value;
             if(!text.trim()) return;
 
-            const container = document.getElementById('notesContainer');
+            const container = document.getElementById('itemsContainer');
             const dateStr = new Date().toLocaleString();
 
-            const noteDiv = document.createElement('div');
-            noteDiv.className = 'note-item';
-            noteDiv.innerHTML = `
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'note-item';
+            itemDiv.innerHTML = `
                 <p>${text}</p>
                 <div class="note-footer">
-                    <span>By: Reef</span>
+                    <span>By: Bat & Reef</span>
                     <span>${dateStr}</span>
                 </div>
             `;
             
-            container.prepend(noteDiv);
+            container.prepend(itemDiv);
             document.getElementById('noteInput').value = '';
         }
     </script>
