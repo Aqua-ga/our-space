@@ -1,216 +1,314 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Secret Space</title>
+    <title>مساحتنا السرية 🤍</title>
     <style>
         :root {
-            --bg-color: #0d0b12;
-            --card-bg: #161220;
-            --accent-pink: #ff758c;
-            --accent-glow: rgba(255, 117, 140, 0.4);
-            --text-color: #f3f0f7;
-            --text-muted: #a39bb3;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-color: #f8fafc;
+            --danger-color: #ef4444;
         }
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
-        .header-container {
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header-section {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 500px;
+            justify-content: space-around;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
             margin-bottom: 20px;
-            background: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 30px;
-            box-shadow: 0 0 15px var(--accent-glow);
-            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-        }
-        .user-dot {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: var(--accent-pink);
-        }
-        .nav-btn {
-            background: transparent;
-            border: 1px solid var(--accent-pink);
-            color: var(--text-color);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 0.9em;
-        }
-        .nav-btn:hover {
-            background: var(--accent-pink);
-            color: #fff;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-        .main-card {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 500px;
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            box-sizing: border-box;
-        }
-        h2 {
+        .avatar-box {
             text-align: center;
-            color: var(--accent-pink);
-            margin-top: 0;
         }
-        textarea {
+        .avatar-box img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+        }
+        .middle-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-align: center;
+            padding: 0 10px;
+        }
+        .section-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        input, textarea, select {
             width: 100%;
-            height: 90px;
-            background: #1e182b;
-            border: 1px solid #332947;
-            border-radius: 12px;
-            color: var(--text-color);
-            padding: 12px;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: white;
             box-sizing: border-box;
-            resize: none;
-            margin-bottom: 12px;
         }
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-pink);
-            box-shadow: 0 0 8px var(--accent-glow);
+        button.action-btn {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .save-btn {
+        button.action-btn:hover {
+            opacity: 0.9;
+        }
+        .wall-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .wall-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+            border: 1px solid #334155;
+        }
+        .wall-item img {
             width: 100%;
-            background: var(--accent-pink);
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--danger-color);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: 0.3s;
+            display: none; /* مخفي افتراضياً، يظهر فقط لصلاحيات بات وزير تشات */
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
-        .save-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 12px var(--accent-glow);
+        .item-date, .author-tag {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            display: block;
+            margin-top: 5px;
         }
-        .note-item {
-            background: #1e182b;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 15px;
-            border-left: 4px solid var(--accent-pink);
-        }
-        .note-footer {
-            font-size: 0.8em;
-            color: var(--text-muted);
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
+        .author-tag {
+            color: var(--accent-color);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر مع زر التنقل الأساسي -->
-    <div class="header-container">
-        <div class="user-badge">
-            <div class="user-dot"></div>
-            <span id="site-title">Our Secret Space</span>
+    <div class="container">
+        <!-- تحديد اسم المستخدم للتحقق من الصلاحيات -->
+        <div class="section-card" style="background: #111827;">
+            <label>حدد اسمك لتفعيل صلاحيات الحذف (خاص بـ بات أو زير تشات):</label>
+            <select id="currentUser" onchange="checkPermissions()">
+                <option value="">-- اختر اسمك --</option>
+                <option value="بات">بات</option>
+                <option value="زير تشات">زير تشات</option>
+                <option value="ضيف">ضيف آخر</option>
+            </select>
         </div>
-        <button class="nav-btn" id="switchBtn" onclick="switchView()">💬 Chat</button>
-    </div>
 
-    <!-- البطاقة الرئيسية -->
-    <div class="main-card">
-        <h2 id="section-title">Welcome Home 🖤</h2>
-        
-        <div id="view-content">
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
-                هذه هي واجهتكم الرئيسية. تقدرون تختارون الانتقال للتشات أو الملاحظات بكل حرية من الأزرار!
-            </p>
-            <button class="save-btn" onclick="openNotes()" style="margin-bottom: 10px;">📌 Go to Sweet Notes</button>
-            <button class="save-btn" onclick="openChat()" style="background: #332947;">💬 Go to Chat</button>
+        <!-- الأفتارات النص بينها -->
+        <div class="header-section">
+            <div class="avatar-box">
+                <img id="avatar1Img" src="https://via.placeholder.com/80" alt="Avatar 1">
+                <input type="file" id="uploadAvatar1" style="font-size: 10px; margin-top:5px;" onchange="updateAvatar('avatar1')">
+            </div>
+            <div class="middle-text" id="middleTextDisplay">مساحتنا الخاصة 🤍</div>
+            <div class="avatar-box">
+                <img id="avatar2Img" src="https://via.placeholder.com/80" alt="Avatar 2">
+                <input type="file" id="uploadAvatar2" style="font-size: 10px; margin-top:5px;" onchange="updateAvatar('avatar2')">
+            </div>
+        </div>
+
+        <!-- قسم الملاحظات -->
+        <div class="section-card">
+            <h3>💌 لوحة الملاحظات</h3>
+            <input type="text" id="authorName" placeholder="اسمك (مين اللي كتب الملاحظة؟)...">
+            <textarea id="noteTextText" placeholder="اكتب ملاحظتك هنا..."></textarea>
+            <button class="action-btn" onclick="saveNote()">إضافة الملاحظة</button>
+            <div id="notesWall" class="wall-grid"></div>
+        </div>
+
+        <!-- قسم الصور والذكريات -->
+        <div class="section-card">
+            <h3>📸 ذكرياتنا المصورة</h3>
+            <input type="file" id="imageInput">
+            <input type="text" id="picCaption" placeholder="وصف الصورة...">
+            <button class="action-btn" onclick="savePicMemory()">حفظ الذكرى</button>
+            <div id="picsWall" class="wall-grid"></div>
         </div>
     </div>
 
     <script>
-        function openNotes() {
-            document.getElementById('section-title').innerText = 'Sweet Notes 📌';
-            document.getElementById('switchBtn').innerText = '🏠 Home';
-            document.getElementById('view-content').innerHTML = `
-                <textarea id="noteInput" placeholder="Write a new note or thought for us..."></textarea>
-                <button class="save-btn" onclick="saveItem()">Save Note 📌</button>
-                <div id="itemsContainer">
-                    <div class="note-item">
-                        <p>Im so grateful for you my love, even tho im not done with this activity but im loving it so far 🫶🫶</p>
-                        <div class="note-footer">
-                            <span>By: Reef</span>
-                            <span>9/25/2026, 3:02:30 AM</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        // محاكاة قاعدة بيانات محلية أو سحابية مؤقتة
+        let remoteData = {
+            our_space_notes: [],
+            our_space_pics: [],
+            avatars: { avatar1: '', avatar2: '' }
+        };
 
-        function openChat() {
-            document.getElementById('section-title').innerText = 'Real-Time Chat 💬';
-            document.getElementById('switchBtn').innerText = '🏠 Home';
-            document.getElementById('view-content').innerHTML = `
-                <textarea id="noteInput" placeholder="Type a message..."></textarea>
-                <button class="save-btn" onclick="saveItem()">Send Message 💬</button>
-                <div id="itemsContainer"></div>
-            `;
-        }
-
-        function switchView() {
-            // الزر فوق يرجعك للصفحة الرئيسية الأساسية
-            document.getElementById('section-title').innerText = 'Welcome Home 🖤';
-            document.getElementById('switchBtn').innerText = '💬 Chat';
-            document.getElementById('view-content').innerHTML = `
-                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
-                    هذه هي واجهتكم الرئيسية. تقدرون تختارون الانتقال للتشات أو الملاحظات بكل حرية من الأزرار!
-                </p>
-                <button class="save-btn" onclick="openNotes()" style="margin-bottom: 10px;">📌 Go to Sweet Notes</button>
-                <button class="save-btn" onclick="openChat()" style="background: #332947;">💬 Go to Chat</button>
-            `;
-        }
-
-        function saveItem() {
-            const text = document.getElementById('noteInput').value;
-            if(!text.trim()) return;
-
-            const container = document.getElementById('itemsContainer');
-            const dateStr = new Date().toLocaleString();
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'note-item';
-            itemDiv.innerHTML = `
-                <p>${text}</p>
-                <div class="note-footer">
-                    <span>By: Bat & Reef</span>
-                    <span>${dateStr}</span>
-                </div>
-            `;
+        function checkPermissions() {
+            const user = document.getElementById('currentUser').value;
+            const deleteButtons = document.querySelectorAll('.delete-btn');
             
-            container.prepend(itemDiv);
-            document.getElementById('noteInput').value = '';
+            // تفعيل زر الحذف فقط لـ بات أو زير تشات
+            const canDelete = (user === 'بات' || user === 'زير تشات');
+            
+            deleteButtons.forEach(btn => {
+                btn.style.display = canDelete ? 'flex' : 'none';
+            });
+        }
+
+        async function updateCloud(newData) {
+            remoteData = { ...remoteData, ...newData };
+            loadNotes();
+            loadPics();
+            checkPermissions();
+        }
+
+        window.saveNote = async function() {
+            const author = document.getElementById('authorName').value.trim();
+            const text = document.getElementById('noteTextText').value.trim();
+            
+            if (!author || !text) { 
+                alert("الرجاء كتابة الاسم ومحتوى الملاحظة!"); 
+                return; 
+            }
+            
+            let notes = remoteData.our_space_notes || [];
+            notes.unshift({ 
+                id: Date.now(), 
+                author: author, 
+                text: text, 
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            });
+            
+            await updateCloud({ our_space_notes: notes });
+            document.getElementById('noteTextText').value = '';
+        }
+
+        window.deleteNote = async function(id) {
+            const user = document.getElementById('currentUser').value;
+            if (user !== 'بات' && user !== 'زير تشات') {
+                alert("عذراً، يحق لـ (بات) أو (زير تشات) فقط الحذف!");
+                return;
+            }
+            let notes = remoteData.our_space_notes || [];
+            notes = notes.filter(item => item.id !== id);
+            await updateCloud({ our_space_notes: notes });
+        }
+
+        function loadNotes() {
+            const wall = document.getElementById('notesWall');
+            let notes = remoteData.our_space_notes || [];
+            wall.innerHTML = '';
+            notes.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'wall-item';
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deleteNote(${item.id})">×</button>
+                    <span class="author-tag">✍️ ${item.author}</span>
+                    <p>${item.text}</p>
+                    <span class="item-date">${item.date}</span>
+                `;
+                wall.appendChild(div);
+            });
+            checkPermissions();
+        }
+
+        window.savePicMemory = async function() {
+            const fileInput = document.getElementById('imageInput');
+            const caption = document.getElementById('picCaption').value.trim();
+            if (!fileInput.files || !fileInput.files[0]) { alert("الرجاء اختيار صورة أولاً!"); return; }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                let pics = remoteData.our_space_pics || [];
+                pics.unshift({ 
+                    id: Date.now(), 
+                    img: e.target.result, 
+                    caption: caption, 
+                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                });
+                await updateCloud({ our_space_pics: pics });
+                document.getElementById('imageInput').value = '';
+                document.getElementById('picCaption').value = '';
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        window.deletePic = async function(id) {
+            const user = document.getElementById('currentUser').value;
+            if (user !== 'بات' && user !== 'زير تشات') {
+                alert("عذراً، يحق لـ (بات) أو (زير تشات) فقط الحذف!");
+                return;
+            }
+            let pics = remoteData.our_space_pics || [];
+            pics = pics.filter(item => item.id !== id);
+            await updateCloud({ our_space_pics: pics });
+        }
+
+        function loadPics() {
+            const wall = document.getElementById('picsWall');
+            let pics = remoteData.our_space_pics || [];
+            wall.innerHTML = '';
+            pics.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'wall-item';
+                div.innerHTML = `
+                    <button class="delete-btn" onclick="deletePic(${item.id})">×</button>
+                    <img src="${item.img}" alt="Memory">
+                    ${item.caption ? `<p style="margin-top: 5px;">${item.caption}</p>` : ''}
+                    <span class="item-date">📅 ${item.date}</span>
+                `;
+                wall.appendChild(div);
+            });
+            checkPermissions();
+        }
+
+        window.updateAvatar = function(avatarKey) {
+            const input = document.getElementById(avatarKey === 'avatar1' ? 'uploadAvatar1' : 'uploadAvatar2');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(avatarKey + 'Img').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     </script>
 </body>
